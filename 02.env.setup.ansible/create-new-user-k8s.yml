@@ -1,0 +1,39 @@
+---
+- hosts: all
+  user: root
+  become: yes
+  become_method: sudo
+  vars:
+    admin_group: 'admin'
+    user_name: 'k8s'
+    pubkey: '../.ssh/id_rsa.pub' # ssh-keygen & chmod 600 first
+
+  tasks:
+    - name: add admin group
+      group:
+        name: '{{admin_group}}'
+        state: present
+
+    - name: add user
+      user:
+        name: '{{user_name}}'
+        shell: /bin/bash
+        groups: '{{admin_group}}'
+        append: yes
+
+    # not recommended
+    # - name: set password
+    #   shell: echo {{user_name}}:s0me7h1ng | chpasswd
+
+    - name: add pub key
+      authorized_key:
+        user: '{{user_name}}'
+        key: '{{ lookup("file", pubkey) }}'
+        state: present
+
+    - name: add admin group to sudo
+      lineinfile:
+        dest: '/etc/sudoers'
+        regexp: '^%{{admin_group}}} ALL'
+        line: '%{{admin_group}} ALL=(ALL) NOPASSWD: ALL'
+        state: present

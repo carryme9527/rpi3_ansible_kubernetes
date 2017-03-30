@@ -1,0 +1,15 @@
+---
+- hosts: all
+  user: root
+  become: yes
+  become_method: sudo
+
+  tasks:
+    - name: delete pirate password
+      shell: 'passwd --delete pirate'
+
+    - name: delete user pirate
+      user:
+        name: 'pirate'
+        state: absent
+        remove: yes

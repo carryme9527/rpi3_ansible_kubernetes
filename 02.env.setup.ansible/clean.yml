@@ -1,0 +1,20 @@
+---
+- hosts: all
+  user: root
+  become: yes
+  become_method: sudo
+  vars:
+    admin_group: 'admin'
+    user_name: 'k8s'
+
+  tasks:
+    - name: add user
+      user:
+        name: '{{user_name}}'
+        state: absent
+        remove: yes
+
+    - name: add admin group
+      group:
+        name: '{{admin_group}}'
+        state: absent
