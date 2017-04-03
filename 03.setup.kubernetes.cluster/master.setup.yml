@@ -1,0 +1,11 @@
+---
+- hosts: master
+  user: root
+  become: yes
+  become_method: sudo
+  tasks:
+
+  - name: setup master
+    shell: kubeadm init --pod-network-cidr 10.244.0.0/16  --skip-preflight-checks
+    register: init
+  - debug: msg="{{init.stdout}}"

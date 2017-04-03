@@ -1,0 +1,16 @@
+---
+- hosts: all
+  user: root
+  become: yes
+  become_method: sudo
+  tasks:
+
+  - name: add kubernetes apt key
+    shell: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+
+  - name: create apt kubernetes.list
+    shell: echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
+
+  - name: install kubeadm
+    shell: apt-get update && apt-get install -y kubeadm
+
